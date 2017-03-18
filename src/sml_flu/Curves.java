@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import org.jfree.data.xy.XYDataset;
+
 public class Curves {
 	
 	static final int T = 1;
@@ -262,12 +264,15 @@ public class Curves {
 		}
 	}
 	
-	private static void plotForeDete() {
+	private static XYDataset[] plotForeDete() {
 		//[0]TP,[1]TN,[2]FP,[3]FN,[4]FPR,[5]TPR,[6]precision,[7]recall,[8]score,[9]lead,[10]leadcnt,[11]lag,[12]lagcnt
 		ArrayList<double[]> resultgasdm = new ArrayList<double[]>();
 		ArrayList<double[]> resultnphgs = new ArrayList<double[]>();
 		ArrayList<double[]> resulteventtree = new ArrayList<double[]>();
 		ArrayList<double[]> resultlgta = new ArrayList<double[]>();
+		ArrayList<?>[] result_set;
+		String[] names;
+		XYDataset[] return_dataset= new XYDataset[4]; 
 		
 		resultgasdm = foreDete("gasdm");
 		resultnphgs = foreDete("nphgs");
@@ -282,8 +287,11 @@ public class Curves {
 		plotnphgs = TPRCurve(resultnphgs);
 		ploteventtree = TPRCurve(resulteventtree);
 		plotlgta = TPRCurve(resultlgta);
-		DrawPlot.draw("FPR vs TPR(Forecasting and detection)", "False Positive Rate(From 0-1 FP Per-day)", 
-				"True Positive Rate(Forecasting and detection)", plotgasdm, plotnphgs, ploteventtree, plotlgta);
+		
+		result_set= new ArrayList<?>[]{plotgasdm, plotnphgs, ploteventtree, plotlgta};
+		names=new String[]{"DMGraphScan","NPHGS","EventTree","LGTA"};
+		return_dataset[0]=DrawPlot.draw("FPR vs TPR(Forecasting and detection)", "False Positive Rate(From 0-1 FP Per-day)", 
+				"True Positive Rate(Forecasting and detection)", result_set,names);
 		output("FPR vs TPR(Forecasting and detection)", "False Positive Rate(From 0-1 FP Per-day)", 
 				"True Positive Rate(Forecasting and detection)", plotgasdm, plotnphgs, ploteventtree, plotlgta);
 		plotgasdm.clear();
@@ -295,8 +303,11 @@ public class Curves {
 		plotnphgs = leadCurve(resultnphgs);
 		ploteventtree = leadCurve(resulteventtree);
 		plotlgta = leadCurve(resultlgta);
-		DrawPlot.draw("FPR vs Lead Time(Forecasting)", "False Positive Rate(From 0-1 FP Per-day)", 
-				"Lead Time(Forecasting)", plotgasdm, plotnphgs, ploteventtree, plotlgta);
+		
+		result_set= new ArrayList<?>[]{plotgasdm, plotnphgs, ploteventtree, plotlgta};
+		names=new String[]{"DMGraphScan","NPHGS","EventTree","LGTA"};
+		return_dataset[1]=DrawPlot.draw("FPR vs Lead Time(Forecasting)", "False Positive Rate(From 0-1 FP Per-day)", 
+				"Lead Time(Forecasting)", result_set,names);
 		output("FPR vs Lead Time(Forecasting)", "False Positive Rate(From 0-1 FP Per-day)", 
 				"Lead Time(Forecasting)", plotgasdm, plotnphgs, ploteventtree, plotlgta);
 		plotgasdm.clear();
@@ -308,10 +319,14 @@ public class Curves {
 		plotnphgs = lagCurve(resultnphgs);
 		ploteventtree = lagCurve(resulteventtree);
 		plotlgta = lagCurve(resultlgta);
-		DrawPlot.draw("FPR vs Lag Time(Detection)", "False Positive Rate(From 0-1 FP Per-day)", 
-				"Lag Time(Detection)", plotgasdm, plotnphgs, ploteventtree, plotlgta);
+		
+		result_set= new ArrayList<?>[]{plotgasdm, plotnphgs, ploteventtree, plotlgta};
+		names=new String[]{"DMGraphScan","NPHGS","EventTree","LGTA"};
+		return_dataset[2]=DrawPlot.draw("FPR vs Lag Time(Detection)", "False Positive Rate(From 0-1 FP Per-day)", 
+				"Lag Time(Detection)", result_set,names);
 		output("FPR vs Lag Time(Detection)", "False Positive Rate(From 0-1 FP Per-day)", 
 				"Lag Time(Detection)", plotgasdm, plotnphgs, ploteventtree, plotlgta);
+		return return_dataset;
 	}
 	
 	private static ArrayList<double[]> fore(String type) {
@@ -355,7 +370,7 @@ public class Curves {
 		return result;
 	}
 	
-	private static void plotFore() {
+	private static XYDataset plotFore() {
 		//[0]TP,[1]TN,[2]FP,[3]FN,[4]FPR,[5]TPR,[6]precision,[7]recall,[8]score,[9]lead,[10]leadcnt,[11]lag,[12]lagcnt
 		ArrayList<double[]> resultgasdm = new ArrayList<double[]>();
 		ArrayList<double[]> resultnphgs = new ArrayList<double[]>();
@@ -375,10 +390,13 @@ public class Curves {
 		plotnphgs = TPRCurve(resultnphgs);
 		ploteventtree = TPRCurve(resulteventtree);
 		plotlgta = TPRCurve(resultlgta);
-		DrawPlot.draw("FPR vs TPR(Forecasting)", "False Positive Rate(From 0-1 FP Per-day)", 
-				"True Positive Rate(Forecasting)", plotgasdm, plotnphgs, ploteventtree, plotlgta);
+		
 		output("FPR vs TPR(Forecasting)", "False Positive Rate(From 0-1 FP Per-day)", 
 				"True Positive Rate(Forecasting)", plotgasdm, plotnphgs, ploteventtree, plotlgta);
+		ArrayList<?>[] result_set= new ArrayList<?>[]{plotgasdm, plotnphgs, ploteventtree, plotlgta};
+		String[] names=new String[]{"DMGraphScan","NPHGS","EventTree","LGTA"};
+		return DrawPlot.draw("FPR vs TPR(Forecasting)", "False Positive Rate(From 0-1 FP Per-day)", 
+				"True Positive Rate(Forecasting)", result_set,names);
 	}
 	
 	private static ArrayList<Point> TPRCurve(ArrayList<double[]> result) {
@@ -498,8 +516,10 @@ public class Curves {
 	
 	public static void main(String[] args) {
 		init();
-		plotForeDete();
-		plotFore();
+		XYDataset [] xydataset;
+		xydataset=plotForeDete();
+		xydataset[3]=plotFore();
+		
 	}
 }
 
