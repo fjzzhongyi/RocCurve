@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Vector;
 
 import org.jfree.data.xy.XYDataset;
 
@@ -264,7 +265,7 @@ public class Curves {
 		}
 	}
 	
-	private static XYDataset[] plotForeDete() {
+	private static Vector plotForeDete() {
 		//[0]TP,[1]TN,[2]FP,[3]FN,[4]FPR,[5]TPR,[6]precision,[7]recall,[8]score,[9]lead,[10]leadcnt,[11]lag,[12]lagcnt
 		ArrayList<double[]> resultgasdm = new ArrayList<double[]>();
 		ArrayList<double[]> resultnphgs = new ArrayList<double[]>();
@@ -273,6 +274,9 @@ public class Curves {
 		ArrayList<?>[] result_set;
 		String[] names;
 		XYDataset[] return_dataset= new XYDataset[4]; 
+		String[] return_title = new String[4];
+		String[] return_xlabel= new String [4];
+		String[] return_ylabel=new String [4];
 		
 		resultgasdm = foreDete("gasdm");
 		resultnphgs = foreDete("nphgs");
@@ -292,6 +296,9 @@ public class Curves {
 		names=new String[]{"DMGraphScan","NPHGS","EventTree","LGTA"};
 		return_dataset[0]=DrawPlot.draw("FPR vs TPR(Forecasting and detection)", "False Positive Rate(From 0-1 FP Per-day)", 
 				"True Positive Rate(Forecasting and detection)", result_set,names);
+		return_title[0]="FPR vs TPR(Forecasting and detection)";
+		return_xlabel[0] ="False Positive Rate(From 0-1 FP Per-day)"; 
+		return_ylabel[0]="True Positive Rate(Forecasting and detection)";
 		output("FPR vs TPR(Forecasting and detection)", "False Positive Rate(From 0-1 FP Per-day)", 
 				"True Positive Rate(Forecasting and detection)", plotgasdm, plotnphgs, ploteventtree, plotlgta);
 		plotgasdm.clear();
@@ -308,6 +315,9 @@ public class Curves {
 		names=new String[]{"DMGraphScan","NPHGS","EventTree","LGTA"};
 		return_dataset[1]=DrawPlot.draw("FPR vs Lead Time(Forecasting)", "False Positive Rate(From 0-1 FP Per-day)", 
 				"Lead Time(Forecasting)", result_set,names);
+		return_title[1]="FPR vs Lead Time(Forecasting)";
+		return_xlabel[1] ="False Positive Rate(From 0-1 FP Per-day)"; 
+		return_ylabel[1]="Lead Time(Forecasting)";
 		output("FPR vs Lead Time(Forecasting)", "False Positive Rate(From 0-1 FP Per-day)", 
 				"Lead Time(Forecasting)", plotgasdm, plotnphgs, ploteventtree, plotlgta);
 		plotgasdm.clear();
@@ -324,9 +334,17 @@ public class Curves {
 		names=new String[]{"DMGraphScan","NPHGS","EventTree","LGTA"};
 		return_dataset[2]=DrawPlot.draw("FPR vs Lag Time(Detection)", "False Positive Rate(From 0-1 FP Per-day)", 
 				"Lag Time(Detection)", result_set,names);
+		return_title[2]="FPR vs Lag Time(Detection)";
+		return_xlabel[2] ="False Positive Rate(From 0-1 FP Per-day)"; 
+		return_ylabel[2]="Lag Time(Detection)";
 		output("FPR vs Lag Time(Detection)", "False Positive Rate(From 0-1 FP Per-day)", 
 				"Lag Time(Detection)", plotgasdm, plotnphgs, ploteventtree, plotlgta);
-		return return_dataset;
+		Vector re_vec = new Vector();
+		re_vec.addElement(return_dataset);
+		re_vec.addElement(return_title);
+		re_vec.addElement(return_xlabel);
+		re_vec.addElement(return_ylabel);
+		return re_vec;
 	}
 	
 	private static ArrayList<double[]> fore(String type) {
@@ -370,7 +388,7 @@ public class Curves {
 		return result;
 	}
 	
-	private static XYDataset plotFore() {
+	private static Vector plotFore() {
 		//[0]TP,[1]TN,[2]FP,[3]FN,[4]FPR,[5]TPR,[6]precision,[7]recall,[8]score,[9]lead,[10]leadcnt,[11]lag,[12]lagcnt
 		ArrayList<double[]> resultgasdm = new ArrayList<double[]>();
 		ArrayList<double[]> resultnphgs = new ArrayList<double[]>();
@@ -395,8 +413,14 @@ public class Curves {
 				"True Positive Rate(Forecasting)", plotgasdm, plotnphgs, ploteventtree, plotlgta);
 		ArrayList<?>[] result_set= new ArrayList<?>[]{plotgasdm, plotnphgs, ploteventtree, plotlgta};
 		String[] names=new String[]{"DMGraphScan","NPHGS","EventTree","LGTA"};
-		return DrawPlot.draw("FPR vs TPR(Forecasting)", "False Positive Rate(From 0-1 FP Per-day)", 
+		XYDataset xydataset = DrawPlot.draw("FPR vs TPR(Forecasting)", "False Positive Rate(From 0-1 FP Per-day)", 
 				"True Positive Rate(Forecasting)", result_set,names);
+		Vector re_vec= new Vector();
+		re_vec.add(xydataset);
+		re_vec.addElement("FPR vs TPR(Forecasting)");
+		re_vec.add("False Positive Rate(From 0-1 FP Per-day)");
+		re_vec.add("True Positive Rate(Forecasting)");
+		return re_vec;
 	}
 	
 	private static ArrayList<Point> TPRCurve(ArrayList<double[]> result) {
@@ -516,9 +540,18 @@ public class Curves {
 	
 	public static void main(String[] args) {
 		init();
-		XYDataset [] xydataset;
-		xydataset=plotForeDete();
-		xydataset[3]=plotFore();
+		Vector v1=plotForeDete();
+		XYDataset [] xydataset = (XYDataset[]) v1.elementAt(0);
+		String[] title=(String[]) v1.elementAt(1);
+		String[] x_label=(String[]) v1.elementAt(2);
+		String[] y_label=(String[]) v1.elementAt(3);
+		Vector v2=plotFore();
+		xydataset[3]= (XYDataset) v2.elementAt(0);
+		title[3]=(String) v2.elementAt(1);
+		x_label[3]=(String) v2.elementAt(2);
+		y_label[3]=(String) v2.elementAt(3);
+		
+		ChartFrame cf = new ChartFrame(xydataset, title, x_label, y_label);
 		
 	}
 }
