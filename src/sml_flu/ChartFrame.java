@@ -34,7 +34,9 @@ public class ChartFrame extends JFrame{
 			chartPanel.setPreferredSize(new java.awt.Dimension(500, 480));
 			jp.add(chartPanel);
 		}
-		this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		this.setLocationRelativeTo(null);
+		this.setSize(1000, 700);
+		//this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		this.setContentPane(jp);
 		this.setVisible(true);
 	}

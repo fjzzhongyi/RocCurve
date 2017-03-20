@@ -47,7 +47,7 @@ public class DrawPlot {
         setContentPane(chartPanel);
         */
         return dataset;
-    }
+	    }
 
     private XYDataset createDataset(ArrayList<?>[] pointset, String[] names) {
         final XYSeriesCollection dataset = new XYSeriesCollection();
